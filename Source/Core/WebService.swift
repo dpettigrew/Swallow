@@ -16,7 +16,7 @@ import Foundation
   used to send requests.
 */
 public protocol SessionDataTaskDataSource {
-    func dataTaskWithRequest(request: NSURLRequest, completion: (NSData?, NSURLResponse?, NSError?) -> Void) -> NSURLSessionDataTask?
+    func dataTaskWithRequest(request: NSURLRequest, session: NSURLSession, completion: (NSData?, NSURLResponse?, NSError?) -> Void) -> NSURLSessionDataTask?
 }
 
 /**
@@ -38,7 +38,9 @@ public struct WebService {
      `NSURLRequest`.
     */
     public var dataTaskSource: SessionDataTaskDataSource = DataTaskDataSource()
-    
+
+    public var session: NSURLSession = NSURLSession.sharedSession()
+
     // MARK: Initialization
     
     /**
@@ -160,8 +162,8 @@ extension WebService: RequestEncoder {
     a given request. The newly created task is resumed immediately if the
     `startTasksImmediately` poperty is set to `true`.
     */
-    func serviceTask(urlRequestEncodable urlRequestEncodable: URLRequestEncodable) -> ServiceTask {
-        let task = ServiceTask(urlRequestEncodable: urlRequestEncodable, dataTaskSource: dataTaskSource)
+    func serviceTask(urlRequestEncodable urlRequestEncodable: URLRequestEncodable, session: NSURLSession) -> ServiceTask {
+        let task = ServiceTask(urlRequestEncodable: urlRequestEncodable, dataTaskSource: dataTaskSource, session: session)
         
         if startTasksImmediately {
             task.resume()
@@ -187,7 +189,7 @@ extension WebService: RequestEncoder {
     */
     func request(method: Request.Method, path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
         let request = encodeRequest(method, url: absoluteURLString(path), parameters: parameters, options: options)
-        return serviceTask(urlRequestEncodable: request)
+        return serviceTask(urlRequestEncodable: request, session: session)
     }
 }
 
@@ -220,7 +222,7 @@ extension WebService {
 // MARK: - SessionDataTaskDataSource
 
 struct DataTaskDataSource: SessionDataTaskDataSource {
-    func dataTaskWithRequest(request: NSURLRequest, completion: (NSData?, NSURLResponse?, NSError?) -> Void) -> NSURLSessionDataTask? {
-        return NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: completion);
+    func dataTaskWithRequest(request: NSURLRequest, session: NSURLSession, completion: (NSData?, NSURLResponse?, NSError?) -> Void) -> NSURLSessionDataTask? {
+        return session.dataTaskWithRequest(request, completionHandler: completion);
     }
 }

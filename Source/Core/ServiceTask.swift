@@ -64,14 +64,14 @@ public final class ServiceTask {
      - parameter dataTaskSource: Object responsible for creating a 
       NSURLSessionDataTask used to send the NSURLRequset.
     */
-    init(urlRequestEncodable: URLRequestEncodable, dataTaskSource: SessionDataTaskDataSource) {
+    init(urlRequestEncodable: URLRequestEncodable, dataTaskSource: SessionDataTaskDataSource, session: NSURLSession) {
         self.handlerQueue = {
             let queue = dispatch_queue_create(("com.THGWebService.ServiceTask" as NSString).UTF8String, DISPATCH_QUEUE_SERIAL)
             dispatch_suspend(queue)
             return queue
         }()
 
-        self.dataTask = dataTaskSource.dataTaskWithRequest(urlRequestEncodable.urlRequestValue, completion: dataTaskCompletionHandler())
+        self.dataTask = dataTaskSource.dataTaskWithRequest(urlRequestEncodable.urlRequestValue, session: session, completion: dataTaskCompletionHandler())
     }
 }
 
