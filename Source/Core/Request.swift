@@ -250,12 +250,9 @@ extension Dictionary {
     func percentEncode(element: Element) -> String? {
         let (name, value) = element
         
-        if let encodedName  = "\(name)".percentEncodeURLQueryCharacters,
-            let encodedValue = "\(value)".percentEncodeURLQueryCharacters {
-                return "\(encodedName)=\(encodedValue)"
-        }
-        
-        return nil
+        let encodedName  = "\(name)".percentEncodeURLQueryCharacters
+        let encodedValue = "\(value)".percentEncodeURLQueryCharacters
+        return "\(encodedName)=\(encodedValue)"
     }
 }
 
@@ -266,9 +263,17 @@ extension String {
      Returns a new string by replacing all characters allowed in an URL's query 
      component with percent encoded characters.
     */
-    var percentEncodeURLQueryCharacters: String? {
-        return self.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
+    var percentEncodeURLQueryCharacters: String {
+        let escapedString = CFURLCreateStringByAddingPercentEscapes(
+            nil,
+            self,
+            nil,
+            "!*'();:@&=+$,/?%#[]",
+            CFStringBuiltInEncodings.UTF8.rawValue
+        )
+        return escapedString as String
     }
+
 }
 
 // MARK: - Percent Encoded Query
