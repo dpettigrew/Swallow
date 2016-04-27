@@ -197,6 +197,7 @@
 		179C5C551AB079980047169F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0730;
 				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = TheHolyGrail;
