@@ -204,6 +204,9 @@
 				TargetAttributes = {
 					179C5C5D1AB079980047169F = {
 						CreatedOnToolsVersion = 6.3;
+						DevelopmentTeam = 2JP854HHCW;
+						DevelopmentTeamName = LifeCentrics;
+						LastSwiftMigration = 0800;
 					};
 					179C5C681AB079980047169F = {
 						CreatedOnToolsVersion = 6.3;
@@ -383,6 +386,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.theholygrail.swallow.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -402,6 +406,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.theholygrail.swallow.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
