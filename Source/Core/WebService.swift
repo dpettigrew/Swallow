@@ -1,46 +1,37 @@
 //
 //  WebService.swift
-//  Swallow
+//  ELWebService
 //
 //  Created by Angelo Di Paolo on 2/16/15.
-//  Copyright (c) 2015 TheHolyGrail. All rights reserved.
+//  Copyright (c) 2015 WalmartLabs. All rights reserved.
 //
 
 import Foundation
 
 /**
-  Types conforming to the `SessionDataTaskDataSource` protocol are responsible 
-  for creating `NSURLSessionDataTask` objects based on a `NSURLRequest` value 
-  and invoking a completion handler after the response of a data task has been 
-  received. Adopt this protocol in order to specify the `NSURLSession` instance 
-  used to send requests.
+ A `WebService` value provides a concise API for encoding a URLRequest object
+ and processing the resulting `URLResponse` object.
 */
-public protocol SessionDataTaskDataSource {
-    func dataTaskWithRequest(_ request: URLRequest, session: URLSession, completion: (Data?, URLResponse?, NSError?) -> Void) -> URLSessionDataTask?
-}
-
-/**
- A `WebService` value provides a concise API for encoding a NSURLRequest object
- and processing the resulting `NSURLResponse` object.
-*/
-public struct WebService {
+@objc public final class WebService: NSObject {
     /// Base URL of the web service.
     public let baseURLString: String
     
     /**
-     Set to `false` to prevent `ServiceTask` instances from resuming 
-     immediately.
+     Type responsible for creating a `URLSessionDataTask` based on a
+     `URLRequest`.
     */
-    public var startTasksImmediately = true
+    public var dataTaskSource: SessionDataTaskDataSource? {
+        set {
+            guard let newValue = newValue else { return }
+            session = newValue
+        }
+        get {
+            return session as? SessionDataTaskDataSource
+        }
+    }
+    public var session: Session = URLSession.shared
+    internal private(set) weak var passthroughDelegate: ServicePassthroughDelegate?
     
-    /**
-     Type responsible for creating a `NSURLSessionDataTask` based on a
-     `NSURLRequest`.
-    */
-    public var dataTaskSource: SessionDataTaskDataSource = DataTaskDataSource()
-
-    public var session: URLSession = URLSession.shared
-
     // MARK: Initialization
     
     /**
@@ -49,10 +40,21 @@ public struct WebService {
     */
     public init(baseURLString: String) {
         self.baseURLString = baseURLString
+        
+        super.init()
+        
+        if let passthroughDataSource = self as? ServicePassthroughDataSource {
+            passthroughDelegate = passthroughDataSource.servicePassthroughDelegate
+        }
+    }
+    
+    public convenience init(baseURLString: String, passthroughDelegate: ServicePassthroughDelegate) {
+        self.init(baseURLString: baseURLString)
+        self.passthroughDelegate = passthroughDelegate
     }
 }
 
-// MARK: - Web Service API
+// MARK: - Request API
 
 extension WebService {
     /**
@@ -60,31 +62,23 @@ extension WebService {
     
     - parameter path: Request path. The value can be relative to the base URL string
     or absolute.
-    - parameter parameters: Optional request parameters. The data is URL encoded as
-    a query string for `GET` requests.
-    - parameter options: Endpoint options used to configure the HTTP request.
     - returns: A ServiceTask instance that refers to the lifetime of processing
-    a given request. The newly created task is resumed immediately if the
-    `startTasksImmediately` poperty is set to `true`.
+    a given request.
     */
-    public func GET(_ path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
-        return request(.GET, path: path, parameters: parameters, options: options)
+    public func GET(_ path: String) -> ServiceTask {
+        return request(.GET, path: path)
     }
-    
+
     /**
     Create a service task for a `POST` HTTP request.
     
     - parameter path: Request path. The value can be relative to the base URL string
     or absolute.
-    - parameter parameters: Optional request parameters. The data is URL encoded and
-    is set as the HTTP body for `POST` requests.
-    - parameter options: Endpoint options used to configure the HTTP request.
     - returns: A ServiceTask instance that refers to the lifetime of processing
-    a given request. The newly created task is resumed immediately if the
-    `startTasksImmediately` poperty is set to `true`.
+    a given request.
     */
-    public func POST(_ path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
-        return request(.POST, path: path, parameters: parameters, options: options)
+    public func POST(_ path: String) -> ServiceTask {
+        return request(.POST, path: path)
     }
     
     /**
@@ -92,15 +86,11 @@ extension WebService {
     
     - parameter path: Request path. The value can be relative to the base URL string
     or absolute.
-    - parameter parameters: Optional request parameters. The data is URL encoded and
-    is set as the HTTP body for `PUT` requests.
-    - parameter options: Endpoint options used to configure the HTTP request.
     - returns: A ServiceTask instance that refers to the lifetime of processing
-    a given request. The newly created task is resumed immediately if the
-    `startTasksImmediately` poperty is set to `true`.
+    a given request.
     */
-    public func PUT(_ path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
-        return request(.PUT, path: path, parameters: parameters, options: options)
+    public func PUT(_ path: String) -> ServiceTask {
+        return request(.PUT, path: path)
     }
     
     /**
@@ -108,15 +98,11 @@ extension WebService {
     
     - parameter path: Request path. The value can be relative to the base URL string
     or absolute.
-    - parameter parameters: Optional request parameters. The data is URL encoded and
-    is set as the HTTP body for `DELETE` requests.
-    - parameter options: Endpoint options used to configure the HTTP request.
     - returns: A ServiceTask instance that refers to the lifetime of processing
-    a given request. The newly created task is resumed immediately if the
-    `startTasksImmediately` poperty is set to `true`.
+    a given request.
     */
-    public func DELETE(_ path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
-        return request(.DELETE, path: path, parameters: parameters, options: options)
+    public func DELETE(_ path: String) -> ServiceTask {
+        return request(.DELETE, path: path)
     }
     
     /**
@@ -124,72 +110,82 @@ extension WebService {
     
     - parameter path: Request path. The value can be relative to the base URL string
     or absolute.
-    - parameter parameters: Optional request parameters. The data is URL encoded as
-    a query string for `HEAD` requests.
-    - parameter options: Endpoint options used to configure the HTTP request.
     - returns: A ServiceTask instance that refers to the lifetime of processing
-    a given request. The newly created task is resumed immediately if the
-    `startTasksImmediately` poperty is set to `true`.
+    a given request.
     */
-    public func HEAD(_ path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
-        return request(.HEAD, path: path, parameters: parameters, options: options)
+    public func HEAD(_ path: String) -> ServiceTask {
+        return request(.HEAD, path: path)
+    }
+    
+    /**
+     Create a service task to fulfill a service request. By default the service
+     task is started by calling resume(). To prevent service tasks from
+     automatically resuming set the `startTasksImmediately` of the WebService
+     value to `false`.
+     
+     - parameter method: HTTP request method.
+     - parameter path: Request path. The value can be relative to the base URL string
+     or absolute.
+     - returns: A ServiceTask instance that refers to the lifetime of processing
+     a given request.
+     */
+    func request(_ method: Request.Method, path: String) -> ServiceTask {
+        return serviceTask(request: Request(method, url: absoluteURLString(path)))
+    }
+    
+    /// Create a service task to fulfill a given request.
+    func serviceTask(request: Request) -> ServiceTask {
+        let task = ServiceTask(request: request, session: self)
+        task.passthroughDelegate = passthroughDelegate
+        return task
     }
 }
 
-// MARK: - RequestEncoder
+// MARK: - Session API
 
-extension WebService: RequestEncoder {
-    /// Encode a Request value
-    func encodeRequest(_ method: Request.Method, url: String, parameters: [String : AnyObject]?, options: [Request.Option]?) -> Request {
-        var request = Request(method, url: url)
-        
-        if let parameters = parameters {
-            request.parameters = parameters
+extension WebService: Session {
+    typealias TaskHandler = (Data?, URLResponse?, NSError?) -> Void
+    
+    public func dataTask(request: URLRequestEncodable, completion: (Data?, URLResponse?, NSError?) -> Void) -> DataTask {
+        // legacy support. only use dataTaskSource when defined
+        // TODO: remove legacy call in 3.0.0
+        if let dataTaskSource = dataTaskSource {
+            return dataTask(session: dataTaskSource, request: request, completion: completion)
         }
         
-        if let options = options {
-            request = request.encodeOptions(options)
-        }
-        
-        return request
+        return dataTask(session: session, request: request, completion: completion)
     }
     
-    /**
-    Create a `ServiceTask`
-    
-    - parameter urlRequestEncoder: Type that provides the encoded NSURLRequest value.
-    - returns: A ServiceTask instance that refers to the lifetime of processing
-    a given request. The newly created task is resumed immediately if the
-    `startTasksImmediately` poperty is set to `true`.
-    */
-    func serviceTask(urlRequestEncodable: URLRequestEncodable, session: URLSession) -> ServiceTask {
-        let task = ServiceTask(urlRequestEncodable: urlRequestEncodable, dataTaskSource: dataTaskSource, session: session)
+    func dataTask(session: Session, request: URLRequestEncodable, completion: (Data?, URLResponse?, NSError?) -> Void) -> DataTask {
+        let urlRequest = canonicalRequest(request: request).urlRequestValue
         
-        if startTasksImmediately {
-            task.resume()
-        }
-        
-        return task
+        passthroughDelegate?.requestSent(urlRequest)
+        return session.dataTask(request: urlRequest, completion: onTaskCompletion(urlRequest, completionHandler: completion))
     }
     
-    /**
-    Create a service task to fulfill a service request. By default the service
-    task is started by calling resume(). To prevent service tasks from
-    automatically resuming set the `startTasksImmediately` of the WebService
-    value to `false`.
+    func canonicalRequest(request: URLRequestEncodable) -> URLRequestEncodable {
+        let urlRequest = request.urlRequestValue
+        
+        if let modifiedRequest = passthroughDelegate?.modifiedRequest(urlRequest) {
+            return modifiedRequest
+        }
+        
+        return urlRequest
+    }
     
-    - parameter method: HTTP request method.
-    - parameter path: Request path. The value can be relative to the base URL string
-    or absolute.
-    - parameter parameters: Optional request parameters.
-    - parameter options: Optional endpoint options used to configure the HTTP request.
-    - returns: A ServiceTask instance that refers to the lifetime of processing
-    a given request. The newly created task is resumed immediately if the
-    `startTasksImmediately` poperty is set to `true`.
-    */
-    func request(_ method: Request.Method, path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
-        let request = encodeRequest(method, url: absoluteURLString(path), parameters: parameters, options: options)
-        return serviceTask(urlRequestEncodable: request, session: session)
+    func onTaskCompletion(_ request: URLRequestEncodable, completionHandler: TaskHandler) -> TaskHandler {
+        return { data, response, error in
+            self.passthroughDelegate?.responseReceived(response, data: data, request: request.urlRequestValue, error: error)
+            completionHandler(data, response, error)
+        }
+    }
+}
+
+// MARK: - Legacy URLSessionDataTask API
+
+extension WebService: SessionDataTaskDataSource {
+    @objc public func dataTaskWithRequest(_ request: URLRequest, completionHandler: (Data?, URLResponse?, NSError?) -> Void) -> URLSessionDataTask {
+        return dataTask(request: request, completion: completionHandler) as! URLSessionDataTask
     }
 }
 
@@ -217,12 +213,4 @@ extension WebService {
         let relativeURL = URL(string: relativeURLString)
         return URL(string: string, relativeTo: relativeURL!)!.absoluteString!
    }
-}
-
-// MARK: - SessionDataTaskDataSource
-
-struct DataTaskDataSource: SessionDataTaskDataSource {
-    func dataTaskWithRequest(_ request: URLRequest, session: URLSession, completion: (Data?, URLResponse?, NSError?) -> Void) -> URLSessionDataTask? {
-        return session.dataTask(with: request, completionHandler: completion);
-    }
 }

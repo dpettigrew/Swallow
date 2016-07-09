@@ -1,0 +1,566 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		170A613E1BBC132500768A12 /* BrewClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170A613A1BBC132500768A12 /* BrewClient.swift */; };
+		170A613F1BBC132500768A12 /* BrewClientAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170A613B1BBC132500768A12 /* BrewClientAPI.swift */; };
+		170A61401BBC132500768A12 /* Brew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170A613D1BBC132500768A12 /* Brew.swift */; };
+		170A61431BBC135F00768A12 /* Brewery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170A61421BBC135F00768A12 /* Brewery.swift */; };
+		170A61481BBC13B100768A12 /* BrewIndexViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170A61461BBC13B100768A12 /* BrewIndexViewController.swift */; };
+		170A61491BBC13B100768A12 /* BrewIndexViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 170A61471BBC13B100768A12 /* BrewIndexViewController.xib */; };
+		178DAE021BBC1665003556B9 /* ServiceTask+Brew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178DAE011BBC1665003556B9 /* ServiceTask+Brew.swift */; };
+		178DAE081BBC169F003556B9 /* ServiceTask+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178DAE071BBC169F003556B9 /* ServiceTask+JSON.swift */; };
+		178DAE0A1BBC16D4003556B9 /* ModelDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178DAE091BBC16D4003556B9 /* ModelDecoder.swift */; };
+		1792A0261C8A102100E792CD /* BrewClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1792A0251C8A102100E792CD /* BrewClientAPITests.swift */; };
+		17B21DC71AB8A10D007E5370 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B21DC61AB8A10D007E5370 /* AppDelegate.swift */; };
+		17B21DCE1AB8A10D007E5370 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17B21DCD1AB8A10D007E5370 /* Images.xcassets */; };
+		17B21DD11AB8A10D007E5370 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17B21DCF1AB8A10D007E5370 /* LaunchScreen.xib */; };
+		17BBC3DF1BBC1AAC00D7DE44 /* BrewDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BBC3DD1BBC1AAC00D7DE44 /* BrewDetailViewController.swift */; };
+		17BBC3E01BBC1AAC00D7DE44 /* BrewDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17BBC3DE1BBC1AAC00D7DE44 /* BrewDetailViewController.xib */; };
+		17BBC3E51BBC224A00D7DE44 /* BrewAddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BBC3E31BBC224A00D7DE44 /* BrewAddViewController.swift */; };
+		17BBC3E61BBC224A00D7DE44 /* BrewAddViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17BBC3E41BBC224A00D7DE44 /* BrewAddViewController.xib */; };
+		CAF0AF951C5052280007761C /* ELWebService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAF0AF921C50521E0007761C /* ELWebService.framework */; };
+		CAF0AF961C5052280007761C /* ELWebService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CAF0AF921C50521E0007761C /* ELWebService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1792A0201C8A0B4100E792CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 17B21DB91AB8A10D007E5370 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 17B21DC01AB8A10D007E5370;
+			remoteInfo = ELWebServiceExample;
+		};
+		CAF0AF911C50521E0007761C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CAF0AF8C1C50521E0007761C /* ELWebService.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 179C5C5E1AB079980047169F;
+			remoteInfo = ELWebService;
+		};
+		CAF0AF931C50521E0007761C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CAF0AF8C1C50521E0007761C /* ELWebService.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 17088ED11C5010EA007ADE1B;
+			remoteInfo = ELWebServiceTests;
+		};
+		CAF0AF971C5052280007761C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CAF0AF8C1C50521E0007761C /* ELWebService.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 179C5C5D1AB079980047169F;
+			remoteInfo = ELWebService;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CA61C9961C50518400742949 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CAF0AF961C5052280007761C /* ELWebService.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		170A613A1BBC132500768A12 /* BrewClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrewClient.swift; sourceTree = "<group>"; };
+		170A613B1BBC132500768A12 /* BrewClientAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrewClientAPI.swift; sourceTree = "<group>"; };
+		170A613D1BBC132500768A12 /* Brew.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Brew.swift; sourceTree = "<group>"; };
+		170A61421BBC135F00768A12 /* Brewery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Brewery.swift; sourceTree = "<group>"; };
+		170A61461BBC13B100768A12 /* BrewIndexViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrewIndexViewController.swift; sourceTree = "<group>"; };
+		170A61471BBC13B100768A12 /* BrewIndexViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BrewIndexViewController.xib; sourceTree = "<group>"; };
+		178DAE011BBC1665003556B9 /* ServiceTask+Brew.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ServiceTask+Brew.swift"; sourceTree = "<group>"; };
+		178DAE071BBC169F003556B9 /* ServiceTask+JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ServiceTask+JSON.swift"; sourceTree = "<group>"; };
+		178DAE091BBC16D4003556B9 /* ModelDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelDecoder.swift; sourceTree = "<group>"; };
+		1792A01B1C8A0B4000E792CD /* ELWebServiceExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ELWebServiceExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1792A01F1C8A0B4100E792CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1792A0251C8A102100E792CD /* BrewClientAPITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrewClientAPITests.swift; sourceTree = "<group>"; };
+		17B21DC11AB8A10D007E5370 /* ELWebServiceExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ELWebServiceExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		17B21DC51AB8A10D007E5370 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		17B21DC61AB8A10D007E5370 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		17B21DCD1AB8A10D007E5370 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		17B21DD01AB8A10D007E5370 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		17BBC3DD1BBC1AAC00D7DE44 /* BrewDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrewDetailViewController.swift; sourceTree = "<group>"; };
+		17BBC3DE1BBC1AAC00D7DE44 /* BrewDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BrewDetailViewController.xib; sourceTree = "<group>"; };
+		17BBC3E31BBC224A00D7DE44 /* BrewAddViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrewAddViewController.swift; sourceTree = "<group>"; };
+		17BBC3E41BBC224A00D7DE44 /* BrewAddViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BrewAddViewController.xib; sourceTree = "<group>"; };
+		CAF0AF8C1C50521E0007761C /* ELWebService.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ELWebService.xcodeproj; path = ../ELWebService.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1792A0181C8A0B4000E792CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		17B21DBE1AB8A10D007E5370 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAF0AF951C5052280007761C /* ELWebService.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		170A61391BBC132500768A12 /* HTTP */ = {
+			isa = PBXGroup;
+			children = (
+				170A613A1BBC132500768A12 /* BrewClient.swift */,
+				170A613B1BBC132500768A12 /* BrewClientAPI.swift */,
+				178DAE011BBC1665003556B9 /* ServiceTask+Brew.swift */,
+				178DAE071BBC169F003556B9 /* ServiceTask+JSON.swift */,
+				178DAE091BBC16D4003556B9 /* ModelDecoder.swift */,
+			);
+			path = HTTP;
+			sourceTree = "<group>";
+		};
+		170A613C1BBC132500768A12 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				170A613D1BBC132500768A12 /* Brew.swift */,
+				170A61421BBC135F00768A12 /* Brewery.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		170A61411BBC133800768A12 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				170A61461BBC13B100768A12 /* BrewIndexViewController.swift */,
+				170A61471BBC13B100768A12 /* BrewIndexViewController.xib */,
+				17BBC3DD1BBC1AAC00D7DE44 /* BrewDetailViewController.swift */,
+				17BBC3DE1BBC1AAC00D7DE44 /* BrewDetailViewController.xib */,
+				17BBC3E31BBC224A00D7DE44 /* BrewAddViewController.swift */,
+				17BBC3E41BBC224A00D7DE44 /* BrewAddViewController.xib */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		1765E3471ABC652400F9E531 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				CAF0AF8C1C50521E0007761C /* ELWebService.xcodeproj */,
+			);
+			name = Modules;
+			sourceTree = "<group>";
+		};
+		1792A01C1C8A0B4100E792CD /* ELWebServiceExampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				1792A0251C8A102100E792CD /* BrewClientAPITests.swift */,
+				1792A01F1C8A0B4100E792CD /* Info.plist */,
+			);
+			path = ELWebServiceExampleTests;
+			sourceTree = "<group>";
+		};
+		17B21DB81AB8A10D007E5370 = {
+			isa = PBXGroup;
+			children = (
+				1765E3471ABC652400F9E531 /* Modules */,
+				17B21DC31AB8A10D007E5370 /* ELWebServiceExample */,
+				1792A01C1C8A0B4100E792CD /* ELWebServiceExampleTests */,
+				17B21DC21AB8A10D007E5370 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		17B21DC21AB8A10D007E5370 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				17B21DC11AB8A10D007E5370 /* ELWebServiceExample.app */,
+				1792A01B1C8A0B4000E792CD /* ELWebServiceExampleTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		17B21DC31AB8A10D007E5370 /* ELWebServiceExample */ = {
+			isa = PBXGroup;
+			children = (
+				17B21DC61AB8A10D007E5370 /* AppDelegate.swift */,
+				170A61411BBC133800768A12 /* View Controllers */,
+				170A613C1BBC132500768A12 /* Model */,
+				170A61391BBC132500768A12 /* HTTP */,
+				17B21DCD1AB8A10D007E5370 /* Images.xcassets */,
+				17B21DCF1AB8A10D007E5370 /* LaunchScreen.xib */,
+				17B21DC41AB8A10D007E5370 /* Supporting Files */,
+			);
+			path = ELWebServiceExample;
+			sourceTree = "<group>";
+		};
+		17B21DC41AB8A10D007E5370 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				17B21DC51AB8A10D007E5370 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		CAF0AF8D1C50521E0007761C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CAF0AF921C50521E0007761C /* ELWebService.framework */,
+				CAF0AF941C50521E0007761C /* ELWebServiceTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1792A01A1C8A0B4000E792CD /* ELWebServiceExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1792A0221C8A0B4200E792CD /* Build configuration list for PBXNativeTarget "ELWebServiceExampleTests" */;
+			buildPhases = (
+				1792A0171C8A0B4000E792CD /* Sources */,
+				1792A0181C8A0B4000E792CD /* Frameworks */,
+				1792A0191C8A0B4000E792CD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1792A0211C8A0B4100E792CD /* PBXTargetDependency */,
+			);
+			name = ELWebServiceExampleTests;
+			productName = ELWebServiceExampleTests;
+			productReference = 1792A01B1C8A0B4000E792CD /* ELWebServiceExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		17B21DC01AB8A10D007E5370 /* ELWebServiceExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 17B21DE01AB8A10D007E5370 /* Build configuration list for PBXNativeTarget "ELWebServiceExample" */;
+			buildPhases = (
+				17B21DBD1AB8A10D007E5370 /* Sources */,
+				17B21DBE1AB8A10D007E5370 /* Frameworks */,
+				17B21DBF1AB8A10D007E5370 /* Resources */,
+				CA61C9961C50518400742949 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CAF0AF981C5052280007761C /* PBXTargetDependency */,
+			);
+			name = ELWebServiceExample;
+			productName = SwallowExample;
+			productReference = 17B21DC11AB8A10D007E5370 /* ELWebServiceExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		17B21DB91AB8A10D007E5370 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0720;
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = WalmartLabs;
+				TargetAttributes = {
+					1792A01A1C8A0B4000E792CD = {
+						CreatedOnToolsVersion = 7.2.1;
+						TestTargetID = 17B21DC01AB8A10D007E5370;
+					};
+					17B21DC01AB8A10D007E5370 = {
+						CreatedOnToolsVersion = 6.3;
+					};
+				};
+			};
+			buildConfigurationList = 17B21DBC1AB8A10D007E5370 /* Build configuration list for PBXProject "ELWebServiceExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 17B21DB81AB8A10D007E5370;
+			productRefGroup = 17B21DC21AB8A10D007E5370 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = CAF0AF8D1C50521E0007761C /* Products */;
+					ProjectRef = CAF0AF8C1C50521E0007761C /* ELWebService.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				17B21DC01AB8A10D007E5370 /* ELWebServiceExample */,
+				1792A01A1C8A0B4000E792CD /* ELWebServiceExampleTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		CAF0AF921C50521E0007761C /* ELWebService.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ELWebService.framework;
+			remoteRef = CAF0AF911C50521E0007761C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CAF0AF941C50521E0007761C /* ELWebServiceTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ELWebServiceTests.xctest;
+			remoteRef = CAF0AF931C50521E0007761C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1792A0191C8A0B4000E792CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		17B21DBF1AB8A10D007E5370 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				17B21DD11AB8A10D007E5370 /* LaunchScreen.xib in Resources */,
+				17BBC3E01BBC1AAC00D7DE44 /* BrewDetailViewController.xib in Resources */,
+				17BBC3E61BBC224A00D7DE44 /* BrewAddViewController.xib in Resources */,
+				17B21DCE1AB8A10D007E5370 /* Images.xcassets in Resources */,
+				170A61491BBC13B100768A12 /* BrewIndexViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1792A0171C8A0B4000E792CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1792A0261C8A102100E792CD /* BrewClientAPITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		17B21DBD1AB8A10D007E5370 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				17B21DC71AB8A10D007E5370 /* AppDelegate.swift in Sources */,
+				178DAE081BBC169F003556B9 /* ServiceTask+JSON.swift in Sources */,
+				17BBC3DF1BBC1AAC00D7DE44 /* BrewDetailViewController.swift in Sources */,
+				170A613E1BBC132500768A12 /* BrewClient.swift in Sources */,
+				170A61431BBC135F00768A12 /* Brewery.swift in Sources */,
+				178DAE0A1BBC16D4003556B9 /* ModelDecoder.swift in Sources */,
+				170A613F1BBC132500768A12 /* BrewClientAPI.swift in Sources */,
+				170A61401BBC132500768A12 /* Brew.swift in Sources */,
+				170A61481BBC13B100768A12 /* BrewIndexViewController.swift in Sources */,
+				17BBC3E51BBC224A00D7DE44 /* BrewAddViewController.swift in Sources */,
+				178DAE021BBC1665003556B9 /* ServiceTask+Brew.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1792A0211C8A0B4100E792CD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 17B21DC01AB8A10D007E5370 /* ELWebServiceExample */;
+			targetProxy = 1792A0201C8A0B4100E792CD /* PBXContainerItemProxy */;
+		};
+		CAF0AF981C5052280007761C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ELWebService;
+			targetProxy = CAF0AF971C5052280007761C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		17B21DCF1AB8A10D007E5370 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				17B21DD01AB8A10D007E5370 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1792A0231C8A0B4200E792CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = ELWebServiceExampleTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.walmart.ELWebServiceExampleTests.ELWebServiceExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ELWebServiceExample.app/ELWebServiceExample";
+			};
+			name = Debug;
+		};
+		1792A0241C8A0B4200E792CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = ELWebServiceExampleTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.walmart.ELWebServiceExampleTests.ELWebServiceExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ELWebServiceExample.app/ELWebServiceExample";
+			};
+			name = Release;
+		};
+		17B21DDE1AB8A10D007E5370 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		17B21DDF1AB8A10D007E5370 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		17B21DE11AB8A10D007E5370 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = "";
+				INFOPLIST_FILE = ELWebServiceExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.WalmartLabs.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = ELWebServiceExample;
+			};
+			name = Debug;
+		};
+		17B21DE21AB8A10D007E5370 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = "";
+				INFOPLIST_FILE = ELWebServiceExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.WalmartLabs.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = ELWebServiceExample;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1792A0221C8A0B4200E792CD /* Build configuration list for PBXNativeTarget "ELWebServiceExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1792A0231C8A0B4200E792CD /* Debug */,
+				1792A0241C8A0B4200E792CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		17B21DBC1AB8A10D007E5370 /* Build configuration list for PBXProject "ELWebServiceExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				17B21DDE1AB8A10D007E5370 /* Debug */,
+				17B21DDF1AB8A10D007E5370 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		17B21DE01AB8A10D007E5370 /* Build configuration list for PBXNativeTarget "ELWebServiceExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				17B21DE11AB8A10D007E5370 /* Debug */,
+				17B21DE21AB8A10D007E5370 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 17B21DB91AB8A10D007E5370 /* Project object */;
+}

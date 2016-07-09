@@ -1,10 +1,14 @@
-# Swallow
+# ELWebService 
 
-Swallow simplifies interaction with HTTP web services by providing a concise API for encoding `NSURLRequest` objects and processing the resulting `NSURLResponse` object. Designed as a lightweight utility for communicating with web services, Swallow is not intended to be a fully-featured networking library. By default Swallow uses the shared `NSURLSession` instance to create data tasks but can be configured to work with any NSURLSession instance using a [protocol](#sessiondatataskdatasource).
+[![Version](https://img.shields.io/badge/version-v3.2.0-blue.svg)](https://github.com/Electrode-iOS/ELWebService/releases/latest)
+[![Build Status](https://travis-ci.org/Electrode-iOS/ELWebService.svg?branch=master)](https://travis-ci.org/Electrode-iOS/ELWebService) 
+[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+
+ELWebService (previously named Swallow) simplifies interaction with HTTP web services by providing an API for building `NSURLRequest` objects and processing `NSURLResponse` and `NSData` response objects. See the [ELWebService Programming Guide](/docs/Programming-Guide.md) for more information.
 
 ## Requirements
 
-Swallow version 0.1.x requires Swift 2 and Xcode 7. For Xcode 6 and Swift 1.2 compatability use the latest [v0.0.x](https://github.com/TheHolyGrail/Swallow/releases/tag/v0.0.3) release.
+ELWebService requires Swift 2.2 and Xcode 7.3.
 
 ## Installation
 
@@ -13,172 +17,125 @@ Swallow version 0.1.x requires Swift 2 and Xcode 7. For Xcode 6 and Swift 1.2 co
 Install with [Carthage](https://github.com/Carthage/Carthage) by adding the framework to your project's [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile).
 
 ```
-github "TheHolyGrail/Swallow" ~> 0.0.1
+github "Electrode-iOS/ELWebService" ~> 3.2.0
 ```
 
 ### Manual
 
-Install manually by adding THGWebService.xcodeproj to your project and configuring your target to link THGWebService.framework.
-
-[THG](https://github.com/TheHolyGrail/) modules are designed to live side-by-side in the file system, like so:
-
-* \MyProject
-* \MyProject\Swallow
+Install manually by adding `ELWebService.xcodeproj` to your project and configuring your target to link `ELWebService.framework`.
 
 ## Usage
 
-At the highest level a request for a resource could look like the following:
-
-```
-WebService(baseURLString: "https://storeocator/")
-    .searchStores(zipCode: "15217")
-    .responseAsStoresModels { (stores: [StoreModel]) in
-      // update UI with model data
-    }
-    .responseError { error in
-      // handle error
-    }
-```
-
-The `WebService` structure and `ServiceTask` class provide the basic building blocks to make this short and simple syntax possible.
+Below is a quick overview of how to get started using ELWebService. See the [ELWebService Programming Guide](/docs/Programming-Guide.md) for detailed usage information.
 
 ### Sending HTTP Requests
 
-At the lowest level `WebService` supports an API for making a HTTP request and processing the raw response data.
+`WebService` provides an API for making a HTTP request and processing the response data.
 
 ```
-WebService(baseURLString: "https://storelocator/")
-  .GET("/stores", parameters: ["zip" : "15217"])
+let service = WebService(baseURLString: "https://brewhapi.herokuapp.com/")
+
+service
+  .GET("/brewers")
+  .setQueryParameters(["state" : "New York"])
   .response { (response: NSURLResponse?, data: NSData?) in
     // process response data
   }
+  .resume()
 ```
 
 To handle the event of a failure provide a closure for error handling by calling the `responseError()` method.
 
 ```
-WebService(baseURLString: "https://storelocator/")
-  .GET("/stores", parameters: ["zip" : "15217"])
+let service = WebService(baseURLString: "https://brewhapi.herokuapp.com/")
+
+service
+  .GET("/brewers")
+  .setQueryParameters(["state" : "New York"])
   .response { (response: NSURLResponse?, data: NSData?) in
     // process response data
   }
   .responseError { (error: ErrorType) in
     // handle error
   }
+  .resume()
 ```
 
 The error handler will only be called after a request results in an error. If an error occurs all other response handlers will not be called. This pattern allows you to cleanly separate the logic for handling success and failure cases.
 
-### JSON
+### Handling JSON responses
 
 Use the `responseJSON()` method to serialize a successful response as a JSON value of type `AnyObject`.
 
 ```
-WebService(baseURLString: "https://storelocator/")
-  .GET("/stores", parameters: ["zip" : "15217"])
-  .responseJSON { json in
+let service = WebService(baseURLString: "https://brewhapi.herokuapp.com/")
+
+service
+  .GET("/brewers")
+  .setQueryParameters(["state" : "New York"])
+  .responseJSON { (json: AnyObject, response: NSURLResponse?) in
     // process response as JSON
   }
+  .resume()
 ```
 
-### Extensions
 
-Add custom request methods by extending `WebService`.
+### Sending URL Query Parameters
 
-```
-public extension WebService {
-    
-    public func searchStores(zipCode zipCode: String) -> ServiceTask {
-        return GET("/stores", parameters: ["zip" : zipCode])
-    }
-}
-```
-
-The chainable service task API makes it easy to create custom response handlers by extending `ServiceTask`.
+Send a `GET` request with URL query parameters.
 
 ```
-extension ServiceTask {
-    
-    public typealias StoreServiceSuccess = ([StoreModel]) -> Void
-    
-    func responseAsStoresModels(handler: StoreServiceSuccess) -> Self {
-        return responseJSON { json in
-            if let models: [StoreModel] = self.parseJSONAsStoreModels(json) {
-                handler(models)
-            } else {
-              self.throwError(.ModelSerializationFailure)
-            }
-        }
-    }
-}
-```
-Custom request methods and response handlers make interactions with the web service more expressive.
-
-```
-WebService(baseURLString: "https://storelocator/")
-  .searchStores(zipCode: "15217")
-  .responseAsStoresModels { (stores: [StoreModel]) in
-    // process resonse as model objects and update UI
-  }
-  .responseError { error in
-    // handle error
-  }
-```
-
-### Request Parameters
-
-Request parameters are percent encoded and appended as a query string of the request URL for `GET` and `HEAD` requests. For all other request methods, parameters are sent as the request body and are encoded based on the `parameterEncoding` endpoint option.
-
-##### Parameter Encodings
-
-- `.Percent` - Encode parameters as a percent encoded query string.
-- `.JSON` - Encode parameters as a JSON object.
-
-##### Sending Parameters
-
-Send a `GET` request with query parameters.
-
-```
+let service = WebService(baseURLString: "http://httpbin.org")
 let parameters = ["foo" : "bar", "percentEncoded" : "this needs percent encoded"]
-        
-WebService(baseURLString: "http://httpbin.org")
-    .GET("/get", parameters: parameters)
-```
 
-HTTP
-
-
-```
-GET /stores?percentEncoded=this%20needs%20percent%20encoded&foo=bar HTTP/1.1
-
-```
-
-
-Send a `POST` request with body parameters.
-
-```
-let parameters = ["foo" : "bar", "percentEncoded" : "this needs percent encoded"]
-        
-WebService(baseURLString: "http://httpbin.org")
-    .POST("/post", parameters: parameters)
+service
+    .GET("/get")
+    .setQueryParameters(parameters)
+    .resume()
 ```
 
 HTTP
 
 ```
-POST /stores HTTP/1.1
+GET /get?percentEncoded=this%20needs%20percent%20encoded&foo=bar HTTP/1.1
+
+```
+
+### Sending Form Data
+
+Send a `POST` request with form parameter data in the request body.
+
+```
+let service = WebService(baseURLString: "http://httpbin.org")
+let parameters = ["foo" : "bar", "percentEncoded" : "this needs percent encoded"]
+
+service
+    .POST("/post")
+    .setFormParameters(parameters)
+    .resume()
+```
+
+HTTP
+
+```
+POST /post HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
 Content-Length: 55
 
 percentEncoded=this%20needs%20percent%20encoded&foo=bar
 ```
 
+### Sending JSON
+
 Send a `POST` request with JSON encoded parameters.
 
 ```
-WebService(baseURLString: "http://httpbin.org")
-    .POST("/post", 
-        parameters: ["foo" : "bar", "number" : 42], 
-        options: [.ParameterEncoding(.JSON)])
+let service = WebService(baseURLString: "http://httpbin.org")
+
+service
+    .POST("/post")
+    .setJSON(["foo" : "bar", "number" : 42])
+    .resume()
 ```
 
 HTTP
@@ -191,121 +148,108 @@ Content-Length: 25
 {"number":42,"foo":"bar"}
 ```
 
-### Options
-
-An array of Option enum values can be passed as additional information to encode in the request.
-
-```
-WebService(baseURLString: "http://httpbin.org")
-    .POST("/post", 
-        parameters: ["foo" : "bar", "number" : 42], 
-        options: [.ParameterEncoding(.JSON),
-                  .Header("custom-header", "12345"),
-                  .Header(Request.Headers.userAgent, "my app ua")])
-```
-
 ### Error Handling
 
-
-To handle the event of a failure call the `responseError` method with a closure. The closure will be called in the event of a failure.
+Error handlers are registered by providing a closure to run in the case the handler chain results in a failure.
 
 ```
-WebService(baseURLString: "https://storelocator/")
-    .GET("/foo")
+service
+    .GET("/brewers")
     .responseError { error in
       // I am error
     }
+    .resume()
 ```
 
-Sometimes your code may fail during processing a response and you will want to handle that failure in an error handler. For example, if you were parsing a JSON payload as an array of model types but the payload failed to be parsed as expected you can call `throwError()` to propogate an error to the error handler.
-
+Sometimes your code may fail during processing a response and you will want to handle that failure in an error handler. For example, if you were parsing a JSON payload as an array of model types but the payload failed to be parsed as expected you can use `throw` to propogate an error of type `ErrorType` to indicate the parsing failure. When throwing an error from a response handler, all subsequent response handlers in the chain will not run and instead any registered error handlers will be called. 
 
 ```
-func responseAsStoreModels(handler: ([StoreModel]) -> Void) -> Self {
-    return responseJSON { json in    
-        if let models = self.parseJSONAsStoreModels(json) {
-            handler(models)
-        } else {
-            self.throwError(self.modelParseError())
-        }
+service
+    .GET("/brewers")
+    .responseJSON { json, response in
+        guard let models: [Brewer] = JSONDecoder<Brewer>.decode(json)  {
+            throw JSONDecoderError.FailedToDecodeBrewer
+        } 
+
+        return .Value(models)
     }
+    .responseError { error in
+      // handle errors
+    }
+    .resume()
+```
+
+### Objective-C Interoperability
+
+ELWebService supports Objective-C via specially-named response handler methods. See the [Objective-C Interoperability section](/docs/Programming-Guide.md#objective-c-interoperability) in the [ELWebService Programming Guide](/docs/Programming-Guide.md) for more information.
+
+```
+extension ServiceTask {
+    internal typealias ObjCResponseHandler = (NSData?, NSURLResponse?) -> ObjCHandlerResult?
+
+    @objc public func responseObjC(handler: (NSData?, NSURLResponse?) -> ObjCHandlerResult?) -> Self
+
+    @objc public func responseJSONObjC(handler: (AnyObject, NSURLResponse?) -> ObjCHandlerResult?) -> Self
+
+    @objc public func responseErrorObjC(handler: (NSError) -> Void) -> Self
+
+    @objc public func updateUIObjC(handler: (AnyObject?) -> Void) -> Self
+
+    @objc public func updateErrorUIObjC(handler: (NSError) -> Void) -> Self
 }
 ```
 
-Now an error handler can be used to seperate the case of handling request failures as well as model parsing failures.
+### Mocking
 
+ELWebService provides a simple but flexible mocking API that allows you to mock your web service's underlying session, data tasks, and data task result, the data passed to the data task's completion handler.
 
 ```
-WebService(baseURLString: "https://storelocator/")
-    .GET("/stores")
-    .responseAsStoreModels { models
-      // valid Foo models
+let expectation = expectationWithDescription("responseAsBrews handler called when JSON is valid")
+
+// create a mock session
+let session = MockSession()
+
+// add a response stub to the session
+let brewerJSON = ["name": "Long Trail Brewing Company", "location": "Vermont"]
+let mockedResponse = MockResponse(statusCode: 200, json: ["brewers": [brewerJSON]])
+session.addStub(mockedResponse)
+
+// inject mock session as your web service's session
+let service = WebService(baseURLString: "http://brewhapi.herokuapp.com/")
+service.session = session
+
+// make a request that will be fulfilled by the mocked response
+service
+    .fetchBrewWithBrewID("12345")
+    .responseAsBrews { brews in
+        XCTAssertEqual(brews.count, 1)
+        expectation.fulfill()
+    }.updateErrorUI { error in
+        XCTFail("updateErrorUI handler should not be called when JSON is valid")
     }
-    .responseError { error in
-      // error handler will be called if JSON 
-      // payload fails to parse as model values
-    }
+    .resume()
+
+
+waitForExpectationsWithTimeout(2.0, handler: nil)
 ```
 
-### Protocols
+For more information on the Mocking API see the [mocking section](/docs/Programming-Guide.md#mocking) of the ELWebService Programming Guide.
 
-##### SessionDataTaskDataSource
+## Example Project
 
-The `SessionDataTaskDataSource` protocol is provided to allow Swallow to work with any NSURLSession-based API. Types conforming to the `SessionDataTaskDataSource` protocol are responsible for creating `NSURLSessionDataTask` objects based on a `NSURLRequest` value and invoking a completion handler after the response of a data task has been received.
-
-By default Swallow implements the `SessionDataTaskDataSource` protocol as a private structure using the shared session returned from `NSURLSession.sharedSession()`. 
-
-### Dispatch Queues
-
-The dispatch queue used to execute the response handler can be specified as the first parameter of a response handler. Unless specified all response handler are run on the main dispatch queue.
-
-```
-let queue = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)
-
-WebService(baseURLString: "https://somehapi.herokuapp.com")
-  .GET("/stores", parameters: ["zip" : "15217"])
-  .response(queue) { (response: NSURLResponse?, data: NSData?) in
-    // process response data
-  }
-```
-
-### KillerRabbit
-
-Swallow includes an optional `ServiceTask` extension that makes it easy to use [KillerRabbit](https://github.com/TheHolyGrail/KillerRabbit) dispatch queue values to specify which queue response handlers run on. Add the file `Source/Extensions/Swallow+KillerRabbit.swift` to your project as well as the KillerRabbit module to use the extension.
-
-```
-WebService(baseURLString: "https://somehapi.herokuapp.com")
-  .GET("/stores", parameters: ["zip" : "15217"])
-  .responseOnDispatchQueue(.Background) { (response: NSURLResponse?, data: NSData?) in
-    // process response data
-  }
-```
-
-
-## Example
-
-An example project is included that demonstrates how Swallow can be used to interact with a web service. A stubbed endpoint is available at [https://somehapi.herokuapp.com/stores](https://somehapi.herokuapp.com/stores) for testing.
+An [example project](/ELWebServiceExample) is included that demonstrates how ELWebService can be used to interact with a web service. The project uses [brewhapi](https://github.com/angelodipaolo/brewhapi) as a mock API for fetching and inserting data. brewhapi is freely hosted at [https://brewhapi.herokuapp.com/brews](https://brewhapi.herokuapp.com/brews) for testing.
 
 ## Contributions
 
 We appreciate your contributions to all of our projects and look forward to interacting with you via Pull Requests, the issue tracker, via Twitter, etc.  We're happy to help you, and to have you help us.  We'll strive to answer every PR and issue and be very transparent in what we do.
 
-When contributing code, please refer to our style guide [Dennis](https://github.com/TheHolyGrail/Dennis).
-
-###### THG's Primary Contributors
-
-Dr. Sneed ([@bsneed](https://github.com/bsneed))<br>
-Steve Riggins ([@steveriggins](https://github.com/steveriggins))<br>
-Sam Grover ([@samgrover](https://github.com/samgrover))<br>
-Angelo Di Paolo ([@angelodipaolo](https://github.com/angelodipaolo))<br>
-Cody Garvin ([@migs647](https://github.com/migs647))<br>
-Wes Ostler ([@wesostler](https://github.com/wesostler))<br>
+When contributing code, please refer to our style guide [Dennis](https://github.com/Electrode-iOS/Dennis).
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2015 Walmart, TheHolyGrail, and other Contributors
+Copyright (c) 2015 Walmart and other Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
