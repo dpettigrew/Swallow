@@ -21,7 +21,7 @@ class RequestTests: XCTestCase {
     Compares values of top-level keys for equality and asserts when unequal.
     Supports Int and String value types only.
     */
-    static func assertRequestParametersNotEqual(parameters: [String: AnyObject], toOriginalParameters originalParameters: [String: AnyObject]) {
+    static func assertRequestParametersNotEqual(_ parameters: [String: AnyObject], toOriginalParameters originalParameters: [String: AnyObject]) {
         
         for (name, originalValue) in originalParameters {
             let comparisonValue: AnyObject? = parameters[name]
@@ -97,7 +97,7 @@ class RequestTests: XCTestCase {
         request.parameterEncoding = .Percent
         
         let urlRequest = request.urlRequestValue
-        let components = NSURLComponents(URL: urlRequest.URL!, resolvingAgainstBaseURL: false)!
+        let components = URLComponents(URL: urlRequest.URL!, resolvingAgainstBaseURL: false)!
         
         if let queryItems = components.queryItems {
             for item in queryItems {
@@ -124,7 +124,7 @@ class RequestTests: XCTestCase {
         XCTAssert(data != nil, "Encoded JSON data should not be nil")
         
         do {
-            json = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions())
+            json = try JSONSerialization.JSONObjectWithData(data!, options: JSONSerialization.ReadingOptions())
         } catch {
             fatalError("Serialized JSON should not be nil")
         }

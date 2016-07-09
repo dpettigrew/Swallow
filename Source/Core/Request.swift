@@ -10,17 +10,17 @@ import Foundation
 
 /// Defines an interface for encoding parameters in a HTTP request.
 protocol ParameterEncoder {
-    func encodeURL(url: NSURL, parameters: [String : AnyObject]) -> NSURL?
-    func encodeBody(parameters: [String : AnyObject]) -> NSData?
+    func encodeURL(_ url: URL, parameters: [String : AnyObject]) -> URL?
+    func encodeBody(_ parameters: [String : AnyObject]) -> Data?
 }
 
 /// Defines an interface for encoding a `NSURLRequest`.
 protocol URLRequestEncodable {
-    var urlRequestValue: NSURLRequest {get}
+    var urlRequestValue: URLRequest {get}
 }
 
 protocol RequestEncoder {
-    func encodeRequest(method: Request.Method, url: String, parameters: [String : AnyObject]?, options: [Request.Option]?) -> Request
+    func encodeRequest(_ method: Request.Method, url: String, parameters: [String : AnyObject]?, options: [Request.Option]?) -> Request
 }
 
 /**
@@ -42,9 +42,9 @@ public struct Request {
     /// A `ParameterEncoding` value defines how to encode request parameters
     public enum ParameterEncoding: ParameterEncoder {
         /// Encode parameters with percent encoding
-        case Percent
+        case percent
         /// Encode parameters as JSON
-        case JSON
+        case json
         
         /**
          Encode query parameters in an existing URL.
@@ -53,10 +53,10 @@ public struct Request {
          - parameter parameters: Query parameters to be encoded as a query string.
          - returns: A NSURL value with query string parameters encoded.
         */
-        public func encodeURL(url: NSURL, parameters: [String : AnyObject]) -> NSURL? {
-            if let components = NSURLComponents(URL: url, resolvingAgainstBaseURL: false) {
+        public func encodeURL(_ url: URL, parameters: [String : AnyObject]) -> URL? {
+            if let components = URLComponents(url: url, resolvingAgainstBaseURL: false) {
                 components.appendPercentEncodedQuery(parameters.percentEncodedQueryString)
-                return components.URL
+                return components.url
             }
             
             return nil
@@ -68,13 +68,13 @@ public struct Request {
          - parameter parameters: Query parameters to be encoded as HTTP body.
          - returns: NSData value with containing encoded parameters.
         */
-        public func encodeBody(parameters: [String : AnyObject]) -> NSData? {
+        public func encodeBody(_ parameters: [String : AnyObject]) -> Data? {
             switch self {
-            case .Percent:
-                return parameters.percentEncodedQueryString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
-            case .JSON:
+            case .percent:
+                return parameters.percentEncodedQueryString.data(using: String.Encoding.utf8, allowLossyConversion: false)
+            case .json:
                 do {
-                    return try NSJSONSerialization.dataWithJSONObject(parameters, options: NSJSONWritingOptions())
+                    return try JSONSerialization.data(withJSONObject: parameters, options: JSONSerialization.WritingOptions())
                 } catch _ {
                     return nil
                 }
@@ -118,12 +118,12 @@ public struct Request {
     internal(set) var headers = [String : String]()
     
     /// The cache policy of the request. See NSURLRequestCachePolicy.
-    internal(set) var cachePolicy = NSURLRequestCachePolicy.UseProtocolCachePolicy
+    internal(set) var cachePolicy = NSURLRequest.CachePolicy.useProtocolCachePolicy
     
     /// The type of parameter encoding to use when encoding request parameters.
-    public var parameterEncoding = ParameterEncoding.Percent {
+    public var parameterEncoding = ParameterEncoding.percent {
         didSet {
-            if parameterEncoding == .JSON {
+            if parameterEncoding == .json {
                 contentType = ContentType.json
             }
         }
@@ -163,10 +163,10 @@ extension Request: URLRequestEncodable {
      
      - returns: A NSURLRequest encoded based on the Request data.
     */
-    public var urlRequestValue: NSURLRequest {
+    public var urlRequestValue: URLRequest {
 
-        let urlRequest = NSMutableURLRequest(URL: NSURL(string: url)!)
-        urlRequest.HTTPMethod = method.rawValue
+        let urlRequest = NSMutableURLRequest(url: URL(string: url)!)
+        urlRequest.httpMethod = method.rawValue
         urlRequest.cachePolicy = cachePolicy
         
         for (name, value) in headers {
@@ -175,21 +175,21 @@ extension Request: URLRequestEncodable {
         
         switch method {
         case .GET, .DELETE:
-            if let url = urlRequest.URL,
+            if let url = urlRequest.url,
                 encodedURL = parameterEncoding.encodeURL(url, parameters: parameters) {
-                    urlRequest.URL = encodedURL
+                    urlRequest.url = encodedURL
             }
         default:
             if let data = parameterEncoding.encodeBody(parameters) {
-                urlRequest.HTTPBody = data
+                urlRequest.httpBody = data
                 
-                if urlRequest.valueForHTTPHeaderField(Headers.contentType) == nil {
+                if urlRequest.value(forHTTPHeaderField: Headers.contentType) == nil {
                     urlRequest.setValue(ContentType.formEncoded, forHTTPHeaderField: Headers.contentType)
                 }
             }
         }
 
-        return urlRequest.copy() as! NSURLRequest
+        return urlRequest.copy() as! URLRequest
     }
 }
 
@@ -200,27 +200,27 @@ extension Request {
     /// An `Option` value defines a rule for encoding part of a `Request` value.
     public enum Option {
         /// Defines the parameter encoding for the HTTP request.
-        case ParameterEncoding(Request.ParameterEncoding)
+        case parameterEncoding(Request.ParameterEncoding)
         /// Defines a HTTP header field name and value to set in the `Request`.
-        case Header(String, String)
+        case header(String, String)
         /// Defines the cache policy to set in the `Request` value.
-        case CachePolicy(NSURLRequestCachePolicy)
+        case cachePolicy(NSURLRequest.CachePolicy)
     }
     
     /// Uses an array of `Option` values as rules for mutating a `Request` value.
-    func encodeOptions(options: [Option]) -> Request {
+    func encodeOptions(_ options: [Option]) -> Request {
         var request = self
         
         for option in options {
             switch option {
                 
-            case .ParameterEncoding(let encoding):
+            case .parameterEncoding(let encoding):
                 request.parameterEncoding = encoding
                 
-            case .Header(let name, let value):
+            case .header(let name, let value):
                 request.headers[name] = value
                 
-            case .CachePolicy(let cachePolicy):
+            case .cachePolicy(let cachePolicy):
                 request.cachePolicy = cachePolicy
             }
         }
@@ -243,11 +243,11 @@ extension Dictionary {
             }
         }
         
-        return components.joinWithSeparator("&")
+        return components.joined(separator: "&")
     }
     
     /// Percent encode a Key/Value pair.
-    func percentEncode(element: Element) -> String? {
+    func percentEncode(_ element: Element) -> String? {
         let (name, value) = element
         
         let encodedName  = "\(name)".percentEncodeURLQueryCharacters
@@ -271,17 +271,17 @@ extension String {
             "!*'();:@&=+$,/?%#[]",
             CFStringBuiltInEncodings.UTF8.rawValue
         )
-        return escapedString as String
+        return escapedString as! String
     }
 
 }
 
 // MARK: - Percent Encoded Query
 
-extension NSURLComponents {
+extension URLComponents {
 
     /// Append an encoded query string to the existing percentEncodedQuery value.
-    func appendPercentEncodedQuery(query: String) {
+    func appendPercentEncodedQuery(_ query: String) {
         if percentEncodedQuery == nil {
             percentEncodedQuery = query
         } else {

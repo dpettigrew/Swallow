@@ -16,7 +16,7 @@ import Foundation
   used to send requests.
 */
 public protocol SessionDataTaskDataSource {
-    func dataTaskWithRequest(request: NSURLRequest, session: NSURLSession, completion: (NSData?, NSURLResponse?, NSError?) -> Void) -> NSURLSessionDataTask?
+    func dataTaskWithRequest(_ request: URLRequest, session: URLSession, completion: (Data?, URLResponse?, NSError?) -> Void) -> URLSessionDataTask?
 }
 
 /**
@@ -39,7 +39,7 @@ public struct WebService {
     */
     public var dataTaskSource: SessionDataTaskDataSource = DataTaskDataSource()
 
-    public var session: NSURLSession = NSURLSession.sharedSession()
+    public var session: URLSession = URLSession.shared
 
     // MARK: Initialization
     
@@ -67,7 +67,7 @@ extension WebService {
     a given request. The newly created task is resumed immediately if the
     `startTasksImmediately` poperty is set to `true`.
     */
-    public func GET(path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
+    public func GET(_ path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
         return request(.GET, path: path, parameters: parameters, options: options)
     }
     
@@ -83,7 +83,7 @@ extension WebService {
     a given request. The newly created task is resumed immediately if the
     `startTasksImmediately` poperty is set to `true`.
     */
-    public func POST(path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
+    public func POST(_ path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
         return request(.POST, path: path, parameters: parameters, options: options)
     }
     
@@ -99,7 +99,7 @@ extension WebService {
     a given request. The newly created task is resumed immediately if the
     `startTasksImmediately` poperty is set to `true`.
     */
-    public func PUT(path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
+    public func PUT(_ path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
         return request(.PUT, path: path, parameters: parameters, options: options)
     }
     
@@ -115,7 +115,7 @@ extension WebService {
     a given request. The newly created task is resumed immediately if the
     `startTasksImmediately` poperty is set to `true`.
     */
-    public func DELETE(path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
+    public func DELETE(_ path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
         return request(.DELETE, path: path, parameters: parameters, options: options)
     }
     
@@ -131,7 +131,7 @@ extension WebService {
     a given request. The newly created task is resumed immediately if the
     `startTasksImmediately` poperty is set to `true`.
     */
-    public func HEAD(path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
+    public func HEAD(_ path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
         return request(.HEAD, path: path, parameters: parameters, options: options)
     }
 }
@@ -140,7 +140,7 @@ extension WebService {
 
 extension WebService: RequestEncoder {
     /// Encode a Request value
-    func encodeRequest(method: Request.Method, url: String, parameters: [String : AnyObject]?, options: [Request.Option]?) -> Request {
+    func encodeRequest(_ method: Request.Method, url: String, parameters: [String : AnyObject]?, options: [Request.Option]?) -> Request {
         var request = Request(method, url: url)
         
         if let parameters = parameters {
@@ -162,7 +162,7 @@ extension WebService: RequestEncoder {
     a given request. The newly created task is resumed immediately if the
     `startTasksImmediately` poperty is set to `true`.
     */
-    func serviceTask(urlRequestEncodable urlRequestEncodable: URLRequestEncodable, session: NSURLSession) -> ServiceTask {
+    func serviceTask(urlRequestEncodable: URLRequestEncodable, session: URLSession) -> ServiceTask {
         let task = ServiceTask(urlRequestEncodable: urlRequestEncodable, dataTaskSource: dataTaskSource, session: session)
         
         if startTasksImmediately {
@@ -187,7 +187,7 @@ extension WebService: RequestEncoder {
     a given request. The newly created task is resumed immediately if the
     `startTasksImmediately` poperty is set to `true`.
     */
-    func request(method: Request.Method, path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
+    func request(_ method: Request.Method, path: String, parameters: [String : AnyObject]? = nil, options: [Request.Option]? = nil) -> ServiceTask {
         let request = encodeRequest(method, url: absoluteURLString(path), parameters: parameters, options: options)
         return serviceTask(urlRequestEncodable: request, session: session)
     }
@@ -202,7 +202,7 @@ extension WebService {
      - parameter string: URL string.
      - returns: An absoulte URL string relative to the value of `baseURLString`.
     */
-    public func absoluteURLString(string: String) -> String {
+    public func absoluteURLString(_ string: String) -> String {
         return constructURLString(string, relativeToURLString: baseURLString)
     }
     
@@ -213,16 +213,16 @@ extension WebService {
      - parameter relativeURLString: Value of relative URL string.
      - returns: An absolute URL string.
     */
-    func constructURLString(string: String, relativeToURLString relativeURLString: String) -> String {
-        let relativeURL = NSURL(string: relativeURLString)
-        return NSURL(string: string, relativeToURL: relativeURL)!.absoluteString!
-    }
+    func constructURLString(_ string: String, relativeToURLString relativeURLString: String) -> String {
+        let relativeURL = URL(string: relativeURLString)
+        return URL(string: string, relativeTo: relativeURL!)!.absoluteString!
+   }
 }
 
 // MARK: - SessionDataTaskDataSource
 
 struct DataTaskDataSource: SessionDataTaskDataSource {
-    func dataTaskWithRequest(request: NSURLRequest, session: NSURLSession, completion: (NSData?, NSURLResponse?, NSError?) -> Void) -> NSURLSessionDataTask? {
-        return session.dataTaskWithRequest(request, completionHandler: completion);
+    func dataTaskWithRequest(_ request: URLRequest, session: URLSession, completion: (Data?, URLResponse?, NSError?) -> Void) -> URLSessionDataTask? {
+        return session.dataTask(with: request, completionHandler: completion);
     }
 }

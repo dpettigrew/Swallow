@@ -20,10 +20,10 @@ class WebServiceTests: XCTestCase {
         }
     }
     
-    func responseHandler(expectation expectation: XCTestExpectation) -> (NSData?, NSURLResponse?) -> Void {
+    func responseHandler(expectation: XCTestExpectation) -> (Data?, URLResponse?) -> Void {
         return { data, response in
             
-            let httpResponse = response as! NSHTTPURLResponse
+            let httpResponse = response as! HTTPURLResponse
             
             if httpResponse.statusCode == 200 {
                 expectation.fulfill()
@@ -31,7 +31,7 @@ class WebServiceTests: XCTestCase {
         }
     }
     
-    func jsonResponseHandler(expectation expectation: XCTestExpectation) -> (AnyObject?) -> Void {
+    func jsonResponseHandler(expectation: XCTestExpectation) -> (AnyObject?) -> Void {
         return { json in
             
             if json is NSDictionary {
@@ -43,15 +43,15 @@ class WebServiceTests: XCTestCase {
     // MARK: Tests  
     
     func testGetEndpoint() {
-        let successExpectation = expectationWithDescription("Received status 200")
+        let successExpectation = expectation(withDescription: "Received status 200")
         let handler = responseHandler(expectation: successExpectation)
         let service = WebService(baseURLString: baseURL)
         let task = service
                     .GET("/get")
                     .response(handler)
         
-        XCTAssertEqual(task.state, NSURLSessionTaskState.Running, "Task should be running by default")
-        waitForExpectationsWithTimeout(2, handler: nil)
+        XCTAssertEqual(task.state, URLSessionTask.State.Running, "Task should be running by default")
+        waitForExpectations(withTimeout: 2, handler: nil)
     }
     
     func testAbsoluteURLString() {
@@ -62,51 +62,51 @@ class WebServiceTests: XCTestCase {
     
     /// Verify that absolute paths work against a different base URL.
     func testGetAbsolutePath() {
-        let successExpectation = expectationWithDescription("Received status 200")
+        let successExpectation = expectation(withDescription: "Received status 200")
         let handler = responseHandler(expectation: successExpectation)
         let service = WebService(baseURLString: "www.walmart.com")
         let task = service
             .GET("http://httpbin.org/get")
             .response(handler)
         
-        XCTAssertEqual(task.state, NSURLSessionTaskState.Running, "Task should be running by default")
-        waitForExpectationsWithTimeout(2, handler: nil)
+        XCTAssertEqual(task.state, URLSessionTask.State.Running, "Task should be running by default")
+        waitForExpectations(withTimeout: 2, handler: nil)
     }
     
     func testPostEndpoint() {
-        let successExpectation = expectationWithDescription("Received status 200")
+        let successExpectation = expectation(withDescription: "Received status 200")
         let handler = responseHandler(expectation: successExpectation)
         let service = WebService(baseURLString: baseURL)
         let task = service
             .POST("/post")
             .response(handler)
         
-        XCTAssertEqual(task.state, NSURLSessionTaskState.Running, "Task should be running by default")
-        waitForExpectationsWithTimeout(2, handler: nil)
+        XCTAssertEqual(task.state, URLSessionTask.State.Running, "Task should be running by default")
+        waitForExpectations(withTimeout: 2, handler: nil)
     }
     
     func testPutEndpoint() {
-        let successExpectation = expectationWithDescription("Received status 200")
+        let successExpectation = expectation(withDescription: "Received status 200")
         let handler = responseHandler(expectation: successExpectation)
         let service = WebService(baseURLString: baseURL)
         let task = service
             .PUT("/put")
             .response(handler)
         
-        XCTAssertEqual(task.state, NSURLSessionTaskState.Running, "Task should be running by default")
-        waitForExpectationsWithTimeout(2, handler: nil)
+        XCTAssertEqual(task.state, URLSessionTask.State.Running, "Task should be running by default")
+        waitForExpectations(withTimeout: 2, handler: nil)
     }
     
     func testDeleteEndpoint() {
-        let successExpectation = expectationWithDescription("Received status 200")
+        let successExpectation = expectation(withDescription: "Received status 200")
         let handler = responseHandler(expectation: successExpectation)
         let service = WebService(baseURLString: baseURL)
         let task = service
             .DELETE("/delete")
             .response(handler)
         
-        XCTAssertEqual(task.state, NSURLSessionTaskState.Running, "Task should be running by default")
-        waitForExpectationsWithTimeout(2, handler: nil)
+        XCTAssertEqual(task.state, URLSessionTask.State.Running, "Task should be running by default")
+        waitForExpectations(withTimeout: 2, handler: nil)
     }
     
     func testDisableStartTasksImmediately() {
@@ -117,12 +117,12 @@ class WebServiceTests: XCTestCase {
         
         let task = service.GET("/get")
 
-        XCTAssertEqual(task.state, NSURLSessionTaskState.Suspended, "Task should be suspended when startTasksImmediately is disabled")
+        XCTAssertEqual(task.state, URLSessionTask.State.Suspended, "Task should be suspended when startTasksImmediately is disabled")
     }
 
     func testErrorHandler() {
         let baseURL = "httpppppp://httpbin.org/"
-        let errorExpectation = expectationWithDescription("Error handler called for bad URL")
+        let errorExpectation = expectation(withDescription: "Error handler called for bad URL")
         var wasResponseCalled = false
         
         WebService(baseURLString: baseURL)
@@ -135,14 +135,14 @@ class WebServiceTests: XCTestCase {
                 errorExpectation.fulfill()
             }
         
-        waitForExpectationsWithTimeout(2, handler: nil)
+        waitForExpectations(withTimeout: 2, handler: nil)
     }
     
     func testSpecifyingResponseHandlerQueue() {
-        let successExpectation = expectationWithDescription("Received status 200")
-        let backgroundExpectation = expectationWithDescription("Background handler ran")
+        let successExpectation = expectation(withDescription: "Received status 200")
+        let backgroundExpectation = expectation(withDescription: "Background handler ran")
         let service = WebService(baseURLString: baseURL)
-        let queue = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)
+        let queue = DispatchQueue.global(Int(UInt64(DispatchQueueAttributes.qosBackground.rawValue)), 0)
 
         let task = service
             .GET("/get")
@@ -153,37 +153,37 @@ class WebServiceTests: XCTestCase {
                 successExpectation.fulfill()
         }
         
-        XCTAssertEqual(task.state, NSURLSessionTaskState.Running, "Task should be running by default")
-        waitForExpectationsWithTimeout(4, handler: nil)
+        XCTAssertEqual(task.state, URLSessionTask.State.Running, "Task should be running by default")
+        waitForExpectations(withTimeout: 4, handler: nil)
     }
     
     func testGetJSON() {
-        let successExpectation = expectationWithDescription("Received status 200")
+        let successExpectation = expectation(withDescription: "Received status 200")
         let handler = jsonResponseHandler(expectation: successExpectation)
         let service = WebService(baseURLString: baseURL)
         let task = service
             .GET("/get")
             .responseJSON(handler)
         
-        XCTAssertEqual(task.state, NSURLSessionTaskState.Running, "Task should be running by default")
-        waitForExpectationsWithTimeout(2, handler: nil)
+        XCTAssertEqual(task.state, URLSessionTask.State.Running, "Task should be running by default")
+        waitForExpectations(withTimeout: 2, handler: nil)
     }
     
     func testGetJSONWithSpecificQueue() {
-        let successExpectation = expectationWithDescription("Received status 200")
+        let successExpectation = expectation(withDescription: "Received status 200")
         let handler = jsonResponseHandler(expectation: successExpectation)
         let service = WebService(baseURLString: baseURL)
-        let queue = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)
+        let queue = DispatchQueue.global(Int(UInt64(DispatchQueueAttributes.qosBackground.rawValue)), 0)
         let task = service
             .GET("/get")
             .responseJSON(queue, handler: handler)
         
-        XCTAssertEqual(task.state, NSURLSessionTaskState.Running, "Task should be running by default")
-        waitForExpectationsWithTimeout(2, handler: nil)
+        XCTAssertEqual(task.state, URLSessionTask.State.Running, "Task should be running by default")
+        waitForExpectations(withTimeout: 2, handler: nil)
     }
     
     func testGetPercentEncodedParameters() {
-        let successExpectation = expectationWithDescription("Received status 200")
+        let successExpectation = expectation(withDescription: "Received status 200")
         let service = WebService(baseURLString: baseURL)
         let parameters = ["foo" : "bar", "percentEncoded" : "this needs percent encoded"]
         
@@ -207,11 +207,11 @@ class WebServiceTests: XCTestCase {
                 RequestTests.assertRequestParametersNotEqual(deliveredParameters!, toOriginalParameters: parameters)
             }
         
-        waitForExpectationsWithTimeout(2, handler: nil)
+        waitForExpectations(withTimeout: 2, handler: nil)
     }
     
     func testPostPercentEncodedParameters() {
-        let successExpectation = expectationWithDescription("Received status 200")
+        let successExpectation = expectation(withDescription: "Received status 200")
         let service = WebService(baseURLString: baseURL)
         let parameters = ["foo" : "bar", "percentEncoded" : "this needs percent encoded"]
         
@@ -235,11 +235,11 @@ class WebServiceTests: XCTestCase {
                 RequestTests.assertRequestParametersNotEqual(deliveredParameters!, toOriginalParameters: parameters)
         }
         
-        waitForExpectationsWithTimeout(2, handler: nil)
+        waitForExpectations(withTimeout: 2, handler: nil)
     }
     
     func testPostJSONEncodedParameters() {
-        let successExpectation = expectationWithDescription("Received status 200")
+        let successExpectation = expectation(withDescription: "Received status 200")
         let service = WebService(baseURLString: baseURL)
         let parameters = ["foo" : "bar", "number" : 42]
         
@@ -265,11 +265,11 @@ class WebServiceTests: XCTestCase {
                 RequestTests.assertRequestParametersNotEqual(deliveredParameters!, toOriginalParameters: parameters)
         }
         
-        waitForExpectationsWithTimeout(2, handler: nil)
+        waitForExpectations(withTimeout: 2, handler: nil)
     }
     
     func testHeadersDelivered() {
-        let successExpectation = expectationWithDescription("Received status 200")
+        let successExpectation = expectation(withDescription: "Received status 200")
         let service = WebService(baseURLString: baseURL)
         let headers = ["Some-Test-Header" :"testValue"]
         
@@ -295,7 +295,7 @@ class WebServiceTests: XCTestCase {
                 RequestTests.assertRequestParametersNotEqual(deliveredHeaders!, toOriginalParameters: headers)
         }
         
-        waitForExpectationsWithTimeout(2, handler: nil)
+        waitForExpectations(withTimeout: 2, handler: nil)
     }
 }
 
