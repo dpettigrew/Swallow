@@ -164,6 +164,7 @@ extension ServiceTask {
 
 extension ServiceTask {
     /// Resume the underlying data task.
+    @discardableResult
     public func resume() -> Self {
         if dataTask == nil {
             dataTask = session?.dataTask(request: urlRequest) { data, response, error in

@@ -21,7 +21,7 @@ extension ServiceTask {
      - parameter parameters: Request parameter values.
     */
     @objc public func setJSONEncodedParametersObjC(_ parameters: [String: AnyObject]) -> Self {
-        setParameters(parameters, encoding: .json)
+        _ = setParameters(parameters, encoding: .json)
         return self
     }
     
@@ -35,7 +35,7 @@ extension ServiceTask {
      - parameter parameters: Request parameter values.
     */
     @objc public func setPercentEncodedParametersObjC(_ parameters: [String: AnyObject]) -> Self {
-        setParameters(parameters, encoding: .percent)
+        _ = setParameters(parameters, encoding: .percent)
         return self
     }
         
@@ -47,7 +47,7 @@ extension ServiceTask {
      from Swift.
     */
     @objc public func setJSONParameterEncodingObjC() -> Self {
-        setParameterEncoding(.json)
+        _ = setParameterEncoding(.json)
         return self
     }
     
@@ -59,7 +59,7 @@ extension ServiceTask {
      from Swift.
     */
     @objc public func setPercentParameterEncodingObjC() -> Self {
-        setParameterEncoding(.percent)
+        _ = setParameterEncoding(.percent)
         return self
     }
 }
