@@ -16,12 +16,12 @@ import Foundation
  used to send requests.
  */
 public protocol SessionDataTaskDataSource: class, Session {
-    func dataTaskWithRequest(_ request: URLRequest, completionHandler: (Data?, URLResponse?, NSError?) -> Void) -> URLSessionDataTask
+    func dataTask(with request: URLRequest, completionHandler: (Data?, URLResponse?, NSError?) -> Void) -> URLSessionDataTask
 }
 
 extension SessionDataTaskDataSource {
-    func dataTask(request: URLRequestEncodable, completion: (Data?, URLResponse?, NSError?) -> Void) -> DataTask {
-        return dataTaskWithRequest(request.urlRequestValue, completionHandler: completion)
+    public func dataTask(with request: URLRequest, completionHandler: (Data?, URLResponse?, NSError?) -> Void) -> URLSessionDataTask {
+        return dataTask(with:request.urlRequestValue, completionHandler: completionHandler)
     }
 }
 

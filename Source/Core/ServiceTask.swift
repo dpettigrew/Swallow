@@ -21,7 +21,7 @@ import Foundation
     public typealias UpdateUIHandler = (Any?) -> Void
 
     /// A closure type alias for an error handler.
-    public typealias ErrorHandler = (ErrorProtocol) -> Void
+    public typealias ErrorHandler = (Error) -> Void
     
     /// State of the service task.
     public var state: URLSessionTask.State {
@@ -322,7 +322,7 @@ extension ServiceTask {
 
 extension ServiceTask {
     /// A closure type alias for an error-recovery handler.
-    public typealias ErrorRecoveryHandler = (ErrorProtocol) throws -> ServiceTaskResult
+    public typealias ErrorRecoveryHandler = (Error) throws -> ServiceTaskResult
 
     /**
     Add a response handler to be called if a request results in an error.
@@ -403,7 +403,7 @@ extension ServiceTask {
 // MARK: - Errors
 
 /// Errors that can occur when processing a response
-public enum ServiceTaskError: ErrorProtocol {
+public enum ServiceTaskError: Error {
     /// Failed to serialize a response body as JSON due to the data being nil.
     case jsonSerializationFailedNilResponseBody
 }

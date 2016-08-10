@@ -24,7 +24,7 @@ public protocol MockableDataTaskResult {
 
 /// Encapsulates the meta and body data of a response.
 public struct MockResponse {
-    enum Error: ErrorProtocol {
+    enum MockResponseError: Error {
         case invalidURL
     }
     
@@ -65,7 +65,7 @@ extension MockResponse: MockableDataTaskResult {
     /// Creates a data task result from the mock response data
     public func dataTaskResult(_ request: URLRequestEncodable) -> (Data?, URLResponse?, NSError?) {
         guard let responseURL = url ?? request.urlRequestValue.url else {
-            return (nil, nil, Error.invalidURL as NSError)
+            return (nil, nil, MockResponseError.invalidURL as NSError)
         }
         
         let response = HTTPURLResponse(url: responseURL, statusCode: statusCode, httpVersion: version, headerFields: headers)
@@ -105,8 +105,8 @@ public class MockSession: Session {
         requestSent(request)
         
         let (data, response, error) = stubbedResponse(request: request)
-        
-        DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosDefault).async {
+
+        DispatchQueue.global(qos: DispatchQoS.background.qosClass).async {
             completion(data, response, error)
         }
         

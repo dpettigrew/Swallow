@@ -16,7 +16,7 @@ public protocol Session {
 
 extension URLSession: Session {
     public func dataTask(request: URLRequestEncodable, completion: (Data?, URLResponse?, NSError?) -> Void) -> DataTask {
-        return dataTask(with: request.urlRequestValue, completionHandler: completion) as DataTask
+        return dataTask(with: request.urlRequestValue, completionHandler: completion)
     }
 }
 

@@ -184,7 +184,7 @@ extension WebService: Session {
 // MARK: - Legacy URLSessionDataTask API
 
 extension WebService: SessionDataTaskDataSource {
-    @objc public func dataTaskWithRequest(_ request: URLRequest, completionHandler: (Data?, URLResponse?, NSError?) -> Void) -> URLSessionDataTask {
+    @objc public func dataTask(with request: URLRequest, completionHandler: (Data?, URLResponse?, NSError?) -> Void) -> URLSessionDataTask {
         return dataTask(request: request, completion: completionHandler) as! URLSessionDataTask
     }
 }
@@ -211,6 +211,6 @@ extension WebService {
     */
     func constructURLString(_ string: String, relativeToURLString relativeURLString: String) -> String {
         let relativeURL = URL(string: relativeURLString)
-        return URL(string: string, relativeTo: relativeURL!)!.absoluteString!
+        return URL(string: string, relativeTo: relativeURL!)!.absoluteString
    }
 }
